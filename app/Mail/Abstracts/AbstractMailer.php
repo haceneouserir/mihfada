@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1); // Declare strict typing for the class.
+
 namespace App\Mail\Abstracts;
 
 use PHPMailer\PHPMailer\PHPMailer;
@@ -11,7 +14,7 @@ abstract class AbstractMailer implements MailerInterface
 
   public function __construct() {
     $this->mail = new PHPMailer(true);
-    $this->mail->SMTPDebug = MailConfig::SMTP_DEBUG;
+    $this->mail->SMTPDebug = MailConfig::$SMTP_DEBUG;
     $this->mail->isSMTP();
     $this->mail->Host = MailConfig::$SMTP_HOST;
     $this->mail->SMTPAuth = true;
@@ -25,6 +28,6 @@ abstract class AbstractMailer implements MailerInterface
       MailConfig::$MAIL_FROM_NAME
     );
 
-    $this->mail->isHTML(true);
+    $this->mail->isHTML(false);
   }
 }

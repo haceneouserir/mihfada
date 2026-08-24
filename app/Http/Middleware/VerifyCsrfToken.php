@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1); // Declare strict typing for the class.
+
 namespace App\Http\Middleware;
 
-class VerifyCsrfToken
+final class VerifyCsrfToken
 {
     public function validate(?string $formToken, ?string $sessionToken): bool
     {
-      if (!$formToken || !$sessionToken) {
+      if ($formToken === '' || $sessionToken === '') {
           return false;
       }
 

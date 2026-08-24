@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1); // Declare strict typing for the class.
+
 namespace App\Http\Requests;
 
 use App\Traits\Sanitizer;
 use ElliotJReed\DisposableEmail\DisposableEmail;
 
-class ContactRequest
+final class ContactRequest
 {
   use Sanitizer;
 
@@ -19,28 +21,28 @@ class ContactRequest
     $message = $this->sanitize($input['message'] ?? '');
 
     // Name validation
-    if (empty($name)) {
+    if ($name === '') {
       $errors['name'] = "The full name field is required!";
-    } else if (strlen($name) > 30) {
+    } else if (mb_strlen($name) > 30) {
       $errors['name'] = "The full name is greater than 30 characters!";
     }
 
     // Email validation
-    if (empty($email)) {
+    if ($email === '') {
       $errors['email'] = "The email field is required!";
     } else if (!filter_var($email, FILTER_VALIDATE_EMAIL) || DisposableEmail::isDisposable($email)) {
       $errors['email'] = "Invalid email address!";
     } 
     // Subject validation
-    if (empty($subject)) {
+    if ($subject === '') {
       $errors['subject'] = "The subject field is required!";
-    } elseif (strlen($subject) > 50) {
+    } elseif (mb_strlen($subject) > 50) {
       $errors['subject'] = "The subject is greater than 50 characters!";
     } 
     // Message validation
-    if (empty($message)) {
+    if ($message === '') {
       $errors['message'] = "The message field is required!";
-    } elseif (strlen($message) > 500) {
+    } elseif (mb_strlen($message) > 500) {
       $errors['message'] = "The message is greater than 500 characters!";
     }
 

@@ -1,5 +1,5 @@
 # Use the official PHP image with Apache
-FROM php:8.3-apache
+FROM php:8.5-apache
 # Install system packages and PHP extensions
 RUN apt-get update && apt-get install -y \
     unzip \

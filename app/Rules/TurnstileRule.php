@@ -1,42 +1,53 @@
 <?php
 
+declare(strict_types=1); // Declare strict typing for the class.
+
 namespace App\Rules;
 
-class TurnstileRule
+final readonly class TurnstileRule
 {
-  private string $secretKey;
-  public function __construct(string $secretKey) {
-    $this->secretKey = $secretKey;
-  }
-
-  public function verify(?string $response, ?string $ip): bool {
-    if (empty($response)) {
+  public function __construct(private string $secretKey) {}
+  public function verify(?string $response, ?string $ip): bool
+  {
+    if ($response === '') {
       return false;
     }
+    // Initialize a cURL session to verify the Turnstile response with Cloudflare's API.
+    $ch = curl_init('https://challenges.cloudflare.com/turnstile/v0/siteverify');
 
-    $context = stream_context_create([
-      'http' => [
-        'method'  => 'POST',
-        'header'  => "Content-Type: application/x-www-form-urlencoded\r\n",
-        'content' => http_build_query([
-          'secret'   => $this->secretKey,
-          'response' => $response,
-          'remoteip' => $ip,
-        ]),
-      ]
+    // Set cURL options for the POST request to the Turnstile verification endpoint.
+    curl_setopt_array($ch, [
+      CURLOPT_POST => true,
+      CURLOPT_POSTFIELDS => http_build_query([
+        'secret' => $this->secretKey,
+        'response' => $response,
+        'remoteip' => $ip,
+      ]),
+      CURLOPT_RETURNTRANSFER => true, // Return the response as a string instead of outputting it directly.
+      CURLOPT_TIMEOUT => 10, // Set a timeout for the request to avoid hanging indefinitely.
+      CURLOPT_CONNECTTIMEOUT => 5, // Set a connection timeout to avoid hanging on slow connections.
     ]);
 
-    $result = file_get_contents(
-      'https://challenges.cloudflare.com/turnstile/v0/siteverify',
-      false,
-      $context
-    );
+    $result = curl_exec($ch);
 
-    if (!$result) {
+    if ($result === false) {
+      unset($ch); // Clean up the cURL handle to free resources.
       return false;
     }
 
-    $json = json_decode($result, true);
-    return !empty($json['success']);
+    $status = curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
+    unset($ch);
+
+    if ($status !== 200) {
+      return false;
+    }
+
+    try {
+      $json = json_decode($result, true, flags: JSON_THROW_ON_ERROR);
+    } catch (\JsonException $e) {
+      return false;
+    }
+
+    return ($json['success'] ?? false) === true; // Return true if the verification was successful, false otherwise.
   }
 }

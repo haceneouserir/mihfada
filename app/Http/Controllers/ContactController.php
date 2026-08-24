@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1); // Declare strict typing for the class.
+
 namespace App\Http\Controllers;
 
 use App\Http\Middleware\VerifyCsrfToken;
@@ -9,7 +11,7 @@ use App\Mail\ContactMailer;
 use App\Support\JsonResponse;
 use Config\MailConfig;
 
-class ContactController
+final class ContactController
 {
   public function handle(): void
   {
@@ -49,16 +51,17 @@ class ContactController
     }
 
     $mailer = new ContactMailer();
-    if (!$mailer->send($data)) {
+    try {
+      $sent = $mailer->send($data);
+      JsonResponse::send([
+        'success' => $sent,
+        'message' => $sent ? 'Your message has been sent successfully!' : 'Your message has not been sent!'
+      ], $sent ? 200 : 500);
+    } catch (\Exception $e) {
       JsonResponse::send([
         'success' => false,
         'message' => 'Your message has not been sent!'
       ], 500);
     }
-
-    JsonResponse::send([
-      'success' => true,
-      'message' => 'Your message has been sent successfully!'
-    ]);
   }
 }

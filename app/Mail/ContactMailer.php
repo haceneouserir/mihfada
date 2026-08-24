@@ -1,12 +1,15 @@
 <?php
 
+declare(strict_types=1); // Declare strict typing for the class.
+
 namespace App\Mail;
 
 use App\Mail\Abstracts\AbstractMailer;
 use Config\MailConfig;
 
-class ContactMailer extends AbstractMailer
+final class ContactMailer extends AbstractMailer
 {
+  #[\Override] // This attribute indicates that the method overrides a method in the parent class.
   public function send(array $data): bool
   {
     $this->mail->addAddress(MailConfig::$MAIL_ADDRESS);
