@@ -4,6 +4,10 @@ declare(strict_types=1); // Declare strict typing for the class.
 
 namespace Config;
 
+/**
+ * Configuration class for email settings.
+ */
+
 final class MailConfig
 {
   public static int $SMTP_DEBUG;
@@ -18,23 +22,14 @@ final class MailConfig
 
   public static function init(): void
   {
-    self::$SMTP_DEBUG = (int)self::env('SMTP_DEBUG', 0);
-    self::$SMTP_HOST = self::env('SMTP_HOST');
-    self::$SMTP_USERNAME = self::env('SMTP_USERNAME');
-    self::$SMTP_PASSWORD = self::env('SMTP_PASSWORD');
-    self::$SMTP_PORT = (int)self::env('SMTP_PORT', 587);
-    self::$MAIL_FROM = self::env('MAIL_FROM');
-    self::$MAIL_FROM_NAME = self::env('MAIL_FROM_NAME');
-    self::$MAIL_ADDRESS = self::env('MAIL_ADDRESS');
-    self::$TURNSTILE_SECRET_KEY = self::env('TURNSTILE_SECRET_KEY');
-  }
-
-  private static function env(string $key, string|int|null $default = null): string
-  {
-    $value = $_ENV[$key] ?? $_SERVER[$key] ?? $default ?? null;
-    if ($value === null || $value === '') {
-      throw new \RuntimeException("Missing required environment variable: {$key}");
-    }
-    return $value;
+    self::$SMTP_DEBUG = (int)env('SMTP_DEBUG', 0);
+    self::$SMTP_HOST = env('SMTP_HOST');
+    self::$SMTP_USERNAME = env('SMTP_USERNAME');
+    self::$SMTP_PASSWORD = env('SMTP_PASSWORD');
+    self::$SMTP_PORT = (int)env('SMTP_PORT', 587);
+    self::$MAIL_FROM = env('MAIL_FROM');
+    self::$MAIL_FROM_NAME = env('MAIL_FROM_NAME');
+    self::$MAIL_ADDRESS = env('MAIL_ADDRESS');
+    self::$TURNSTILE_SECRET_KEY = env('TURNSTILE_SECRET_KEY');
   }
 }

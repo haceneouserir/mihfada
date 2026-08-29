@@ -7,12 +7,16 @@ namespace App\Mail\Abstracts;
 use PHPMailer\PHPMailer\PHPMailer;
 use App\Mail\Contracts\MailerInterface;
 use Config\MailConfig;
+/**
+ * Abstract class for mailers using PHPMailer.
+ */
 
 abstract class AbstractMailer implements MailerInterface
 {
   protected PHPMailer $mail;
 
-  public function __construct() {
+  public function __construct()
+  {
     $this->mail = new PHPMailer(true);
     $this->mail->SMTPDebug = MailConfig::$SMTP_DEBUG;
     $this->mail->isSMTP();

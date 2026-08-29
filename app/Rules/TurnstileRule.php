@@ -4,6 +4,10 @@ declare(strict_types=1); // Declare strict typing for the class.
 
 namespace App\Rules;
 
+/**
+ * Rule class for verifying Cloudflare Turnstile responses.
+ */
+
 final readonly class TurnstileRule
 {
   public function __construct(private string $secretKey) {}

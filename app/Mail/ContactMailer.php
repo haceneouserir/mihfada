@@ -7,6 +7,10 @@ namespace App\Mail;
 use App\Mail\Abstracts\AbstractMailer;
 use Config\MailConfig;
 
+/**
+ * Mailer class for sending contact form emails.
+ */
+
 final class ContactMailer extends AbstractMailer
 {
   #[\Override] // This attribute indicates that the method overrides a method in the parent class.

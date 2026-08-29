@@ -11,6 +11,10 @@ use App\Mail\ContactMailer;
 use App\Support\JsonResponse;
 use Config\MailConfig;
 
+/**
+ * Controller class for handling contact form submissions.
+ */
+
 final class ContactController
 {
   public function handle(): void
